@@ -41,7 +41,6 @@ public class main_controller implements Initializable {
     private Map<String,Slug> slugsMap;
     private ObservableList<Slug> slugsList;
     private Callback<TableColumn<Slug, String>, TableCell<Slug, String>> cellFactory;
-    private static boolean lang = true;
     @FXML
     void buttonHandle(ActionEvent event) {
     	Node n = (Node) event.getSource();
@@ -50,14 +49,7 @@ public class main_controller implements Initializable {
     		FileChooser fc = new FileChooser();
     		fc.getExtensionFilters().add(new ExtensionFilter("JAVA Properties File", "*.properties"));
     		File f = fc.showOpenDialog(n.getScene().getWindow());
-    		if(lang) {
-        		importFile(f.getPath(),"en");
-    			lang = !lang;
-    		}
-    		else {
-        		importFile(f.getPath(),"fr");
-    			lang = !lang;
-    		}
+    		importFile(f.getPath(),f.getName().split(".properties")[0]);
     		break;
     	}
     }
@@ -84,8 +76,6 @@ public class main_controller implements Initializable {
         
         langTableView.getColumns().clear();
         langTableView.getColumns().add(slugCol);
-        langTableView.getColumns().add(newTabColumn("en"));
-        langTableView.getColumns().add(newTabColumn("fr"));
         langTableView.setItems(slugsList);
 	}
 	
@@ -101,7 +91,9 @@ public class main_controller implements Initializable {
 		for(Object k : slugsMap.keySet()) {
 			slugsList.add(slugsMap.get(k));
 		}
+        langTableView.getColumns().add(newTabColumn(lang));
         langTableView.setItems(slugsList);
+        
 	}
 		
 	private TableColumn<Slug, String> newTabColumn(String lang){
