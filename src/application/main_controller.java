@@ -39,6 +39,7 @@ public class main_controller implements Initializable {
     @FXML private Button clearFilesButton;
     @FXML private Button saveFilesButton;
     @FXML private Button newSlugButton;
+    @FXML private TextField newSlugTF;
     
     @FXML private TableView<Slug> langTableView;
     private Map<String,Slug> slugsMap;
@@ -81,15 +82,23 @@ public class main_controller implements Initializable {
     		}
     		langTableView.refresh();
     		break;
+    	case "newSlugButton" :
+    		if(newSlugTF.getText()==null || newSlugTF.getText().equals("")) {
+    			newSlugTF.setText("newslug");
+    		}
+    		Slug s = new Slug(newSlugTF.getText());
+    		slugsMap.put(newSlugTF.getText(), s);
+    		slugsList.add(s);
+    		newSlugTF.clear();
+    		break;
     	}
     }
 
 	private void saveFile(String lang, String path) {
 		StringBuffer sb = new StringBuffer();
 		for(Slug s : slugsList) {
-			String str = s.getVal(lang).get();
-			if (str==null) {
-				str="";
+			if(s.getVal(lang)==null || s.getVal(lang).get()==null) {
+				s.setVal(lang, "");
 			}
 			sb.append(s.getSlug().get() + "=" + s.getVal(lang).get() + '\n');
 		}
