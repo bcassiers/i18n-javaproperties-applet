@@ -54,6 +54,18 @@ public class main_controller implements Initializable {
     		File f = fc.showOpenDialog(n.getScene().getWindow());
     		importFile(f.getPath(),f.getName().split(".properties")[0]);
     		break;
+    	case "newFileButton" : 
+    		FileChooser fc1 = new FileChooser();
+    		fc1.getExtensionFilters().add(new ExtensionFilter("JAVA Properties File", "*.properties"));
+    		File f1 = fc1.showSaveDialog(n.getScene().getWindow());
+    		try {
+				f1.createNewFile();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		importFile(f1.getPath(),f1.getName().split(".properties")[0]);
+    		break;
     	case "saveFilesButton" : 
     		DirectoryChooser dc = new DirectoryChooser();
     		File d = dc.showDialog(n.getScene().getWindow());
