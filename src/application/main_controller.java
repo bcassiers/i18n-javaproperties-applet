@@ -2,6 +2,8 @@ package application;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -24,6 +26,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.util.Callback;
@@ -51,8 +54,52 @@ public class main_controller implements Initializable {
     		File f = fc.showOpenDialog(n.getScene().getWindow());
     		importFile(f.getPath(),f.getName().split(".properties")[0]);
     		break;
+    	case "saveFilesButton" : 
+    		DirectoryChooser dc = new DirectoryChooser();
+    		File d = dc.showDialog(n.getScene().getWindow());
+    		for(int i = 1; i < langTableView.getColumns().size(); i++) {
+    			saveFile(langTableView.getColumns().get(i).getText(), d.getPath());
+    		}
+    		break;
+    	case "clearFilesButton" : 
+    		slugsMap.clear();
+    		slugsList.clear();
+    		if(langTableView.getColumns().size()>1) {
+    			langTableView.getColumns().remove(1, langTableView.getColumns().size());
+    		}
+    		langTableView.refresh();
+    		break;
     	}
     }
+
+	private void saveFile(String lang, String path) {
+		StringBuffer sb = new StringBuffer();
+		for(Slug s : slugsList) {
+			String str = s.getVal(lang).get();
+			if (str==null) {
+				str="";
+			}
+			sb.append(s.getSlug().get() + "=" + s.getVal(lang).get() + '\n');
+		}
+		
+	    try {
+	    	File f = new File(path + "/" + lang + ".properties");
+	    	if(!f.createNewFile()) {
+	    		f.delete();
+	    		f.createNewFile();
+	    	}
+	    	FileOutputStream fos = new FileOutputStream(path + "/" + lang + ".properties");
+			fos.write(sb.toString().getBytes());
+			fos.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
